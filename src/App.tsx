@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation />
+      <Navigation onGetStarted={() => setShowIntake(true)} />
       <Hero onGetStarted={() => setShowIntake(true)} />
       <PlatformFeatures />
       <Stablecoins />

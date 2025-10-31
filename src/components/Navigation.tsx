@@ -4,7 +4,11 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { List, X } from '@phosphor-icons/react'
 import { Hummingbird } from '@/components/Hummingbird'
 
-export function Navigation() {
+interface NavigationProps {
+  onGetStarted: () => void
+}
+
+export function Navigation({ onGetStarted }: NavigationProps) {
   const [open, setOpen] = useState(false)
 
   const navItems = [
@@ -23,13 +27,20 @@ export function Navigation() {
     }
   }
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <button 
+          onClick={scrollToTop}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
           <Hummingbird className="text-accent" size={40} />
           <span className="text-2xl font-bold tracking-tight">TRUSTIVA</span>
-        </div>
+        </button>
 
         <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
@@ -41,7 +52,11 @@ export function Navigation() {
               {item.label}
             </button>
           ))}
-          <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+          <Button 
+            size="lg" 
+            className="bg-accent text-accent-foreground hover:bg-accent/90"
+            onClick={onGetStarted}
+          >
             Get Started
           </Button>
         </div>
@@ -63,7 +78,14 @@ export function Navigation() {
                   {item.label}
                 </button>
               ))}
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 mt-4">
+              <Button 
+                size="lg" 
+                className="bg-accent text-accent-foreground hover:bg-accent/90 mt-4"
+                onClick={() => {
+                  onGetStarted()
+                  setOpen(false)
+                }}
+              >
                 Get Started
               </Button>
             </div>
