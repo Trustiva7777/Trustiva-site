@@ -2,29 +2,33 @@ import { Card } from '@/components/ui/card'
 import { CheckCircle } from '@phosphor-icons/react'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-
-const features = [
-  {
-    title: 'XRPL Native',
-    description: 'Built on XRP Ledger infrastructure',
-  },
-  {
-    title: 'Reg D/Reg S Ready',
-    description: 'U.S. private placement compliance',
-  },
-  {
-    title: 'Rule 144 Lockups',
-    description: 'Automated restriction periods',
-  },
-  {
-    title: 'MiCA/MiFID Alignment',
-    description: 'European regulatory framework',
-  },
-]
+import { useLanguage } from '@/hooks/use-language'
+import { getTranslation } from '@/lib/translations'
 
 export function PlatformFeatures() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { language } = useLanguage()
+  const t = getTranslation(language)
+
+  const features = [
+    {
+      title: t.platform.xrplNative,
+      description: t.platform.xrplNativeDesc,
+    },
+    {
+      title: t.platform.regReady,
+      description: t.platform.regReadyDesc,
+    },
+    {
+      title: t.platform.rule144,
+      description: t.platform.rule144Desc,
+    },
+    {
+      title: t.platform.mifid,
+      description: t.platform.mifidDesc,
+    },
+  ]
 
   return (
     <section id="platform" ref={ref} className="py-24 px-6 bg-background">

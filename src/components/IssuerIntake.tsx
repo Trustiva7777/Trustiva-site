@@ -10,6 +10,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
 import { ArrowLeft, ArrowRight, CheckCircle, Upload, House } from '@phosphor-icons/react'
 import { toast } from 'sonner'
+import { useLanguage } from '@/hooks/use-language'
+import { getTranslation } from '@/lib/translations'
 
 type FormData = {
   issuerLegalName: string
@@ -124,6 +126,8 @@ type IssuerIntakeProps = {
 export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useKV<FormData>('issuer-intake-form', INITIAL_FORM_DATA)
+  const { language } = useLanguage()
+  const t = getTranslation(language)
 
   const data = formData || INITIAL_FORM_DATA
 
@@ -163,8 +167,8 @@ export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
   }
 
   const handleSubmit = () => {
-    toast.success('Application submitted successfully!', {
-      description: 'Our team will review your submission and contact you within 2-3 business days.',
+    toast.success(t.intake.successTitle, {
+      description: t.intake.successMessage,
     })
     setFormData(INITIAL_FORM_DATA)
     setCurrentStep(1)
@@ -178,8 +182,8 @@ export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
         <div className="mb-8">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Issuer / Offering Intake</h1>
-              <p className="text-muted-foreground">Complete this questionnaire to begin the onboarding process with TRUSTIVA</p>
+              <h1 className="text-4xl font-bold mb-2">{t.intake.title}</h1>
+              <p className="text-muted-foreground">{t.intake.successMessage}</p>
             </div>
             {onGoHome && (
               <Button 
@@ -189,7 +193,7 @@ export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
                 className="flex-shrink-0"
               >
                 <House size={20} className="mr-2" />
-                Home
+                {t.intake.goHome}
               </Button>
             )}
           </div>
@@ -892,7 +896,7 @@ export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
               }
             >
               <CheckCircle size={20} className="mr-2" weight="fill" />
-              Submit Application
+              {t.intake.submit}
             </Button>
           )}
         </div>

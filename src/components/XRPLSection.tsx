@@ -1,10 +1,14 @@
 import { Card } from '@/components/ui/card'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useLanguage } from '@/hooks/use-language'
+import { getTranslation } from '@/lib/translations'
 
 export function XRPLSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { language } = useLanguage()
+  const t = getTranslation(language)
 
   return (
     <section ref={ref} className="py-24 px-6 bg-muted">
@@ -33,12 +37,9 @@ export function XRPLSection() {
                 </svg>
               </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold">Built on XRPL</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              XRP Ledger native integration
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold">{t.xrpl.title}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Leveraging the speed, scalability, and compliance features of the XRP Ledger
+              {t.xrpl.description}
             </p>
           </Card>
         </motion.div>

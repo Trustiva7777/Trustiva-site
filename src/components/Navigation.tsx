@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { List, X } from '@phosphor-icons/react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { List, Globe } from '@phosphor-icons/react'
 import { Hummingbird } from '@/components/Hummingbird'
+import { useLanguage } from '@/hooks/use-language'
+import { languages, getTranslation } from '@/lib/translations'
 
 interface NavigationProps {
   onGetStarted: () => void
@@ -10,14 +18,18 @@ interface NavigationProps {
 
 export function Navigation({ onGetStarted }: NavigationProps) {
   const [open, setOpen] = useState(false)
+  const { language, setLanguage } = useLanguage()
+  const t = getTranslation(language)
 
   const navItems = [
-    { label: 'Platform', href: '#platform' },
-    { label: 'Stablecoins', href: '#stablecoins' },
-    { label: 'RWA', href: '#rwa' },
-    { label: 'Compliance', href: '#compliance' },
-    { label: 'Onboarding', href: '#onboarding' },
+    { label: t.nav.platform, href: '#platform' },
+    { label: t.nav.stablecoins, href: '#stablecoins' },
+    { label: t.nav.rwa, href: '#rwa' },
+    { label: t.nav.compliance, href: '#compliance' },
+    { label: t.nav.onboarding, href: '#onboarding' },
   ]
+
+  const currentLanguage = languages.find(l => l.code === language)
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href)
@@ -52,12 +64,34 @@ export function Navigation({ onGetStarted }: NavigationProps) {
               {item.label}
             </button>
           ))}
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="gap-2">
+                <Globe size={20} />
+                <span className="text-lg">{currentLanguage?.flag}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {languages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={language === lang.code ? 'bg-accent/10' : ''}
+                >
+                  <span className="text-lg mr-2">{lang.flag}</span>
+                  <span>{lang.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
           <Button 
             size="lg" 
             className="bg-accent text-accent-foreground hover:bg-accent/90"
             onClick={onGetStarted}
           >
-            Get Started
+            {t.nav.getStarted}
           </Button>
         </div>
 
@@ -78,6 +112,33 @@ export function Navigation({ onGetStarted }: NavigationProps) {
                   {item.label}
                 </button>
               ))}
+              
+              <div className="border-t border-border pt-4">
+                <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                  <Globe size={16} />
+                  Language
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code)
+                        setOpen(false)
+                      }}
+                      className={`p-2 rounded-lg border text-left transition-colors ${
+                        language === lang.code
+                          ? 'bg-accent/10 border-accent'
+                          : 'border-border hover:bg-muted'
+                      }`}
+                    >
+                      <span className="text-lg mr-2">{lang.flag}</span>
+                      <span className="text-sm">{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
               <Button 
                 size="lg" 
                 className="bg-accent text-accent-foreground hover:bg-accent/90 mt-4"
@@ -86,7 +147,7 @@ export function Navigation({ onGetStarted }: NavigationProps) {
                   setOpen(false)
                 }}
               >
-                Get Started
+                {t.nav.getStarted}
               </Button>
             </div>
           </SheetContent>

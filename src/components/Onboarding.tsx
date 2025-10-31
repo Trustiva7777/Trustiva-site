@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Buildings, User, Briefcase } from '@phosphor-icons/react'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useLanguage } from '@/hooks/use-language'
+import { getTranslation } from '@/lib/translations'
 
 interface OnboardingProps {
   onIssuerStart: () => void
@@ -11,6 +13,8 @@ interface OnboardingProps {
 export function Onboarding({ onIssuerStart }: OnboardingProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { language } = useLanguage()
+  const t = getTranslation(language)
 
   return (
     <section id="onboarding" ref={ref} className="py-24 px-6 bg-background">
@@ -23,11 +27,10 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
         >
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Issuer • Investor • Broker Onboarding
+              {t.onboarding.title}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Single intake with jurisdiction‑aware questions and required disclosures. Upload docs, 
-              verify identity, connect wallets, and generate compliance‑ready packets.
+              {t.onboarding.description}
             </p>
           </div>
 
@@ -35,9 +38,12 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
             <Card className="p-8 space-y-6 hover:shadow-xl transition-all hover:-translate-y-1 border-2">
               <Buildings size={48} weight="duotone" className="text-accent" />
               <div className="space-y-3">
-                <h3 className="text-2xl font-semibold">Issuer Onboarding</h3>
+                <h3 className="text-2xl font-semibold">{t.onboarding.issuerTitle}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  FINRA 10‑22 records • Reg D/Reg S • Rule 144 lockups • MiCA alignment
+                  {t.onboarding.issuerDesc}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {t.onboarding.issuerRequirements}
                 </p>
               </div>
               <Button 
@@ -45,7 +51,7 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
               >
-                Start
+                {t.onboarding.issuerCta}
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Card>
@@ -53,9 +59,12 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
             <Card className="p-8 space-y-6 hover:shadow-xl transition-all hover:-translate-y-1 border-2">
               <User size={48} weight="duotone" className="text-accent" />
               <div className="space-y-3">
-                <h3 className="text-2xl font-semibold">Investor KYC</h3>
+                <h3 className="text-2xl font-semibold">{t.onboarding.investorTitle}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Identity verification • Accreditation checks • Wallet linking • Jurisdiction compliance
+                  {t.onboarding.investorDesc}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {t.onboarding.investorRequirements}
                 </p>
               </div>
               <Button 
@@ -63,7 +72,7 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
                 size="lg"
                 disabled
               >
-                Start
+                {t.onboarding.investorCta}
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Card>
@@ -71,9 +80,12 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
             <Card className="p-8 space-y-6 hover:shadow-xl transition-all hover:-translate-y-1 border-2">
               <Briefcase size={48} weight="duotone" className="text-accent" />
               <div className="space-y-3">
-                <h3 className="text-2xl font-semibold">Broker/Dealer Intake</h3>
+                <h3 className="text-2xl font-semibold">{t.onboarding.brokerTitle}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  License verification • Regulatory filings • AML policies • Transaction permissions
+                  {t.onboarding.brokerDesc}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {t.onboarding.brokerRequirements}
                 </p>
               </div>
               <Button 
@@ -81,19 +93,10 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
                 size="lg"
                 disabled
               >
-                Start
+                {t.onboarding.brokerCta}
                 <ArrowRight className="ml-2" size={18} />
               </Button>
             </Card>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <Button variant="outline" size="lg" className="border-2" onClick={onIssuerStart}>
-              Open Intake
-            </Button>
-            <Button variant="outline" size="lg" className="border-2" disabled>
-              View Sample Packet
-            </Button>
           </div>
         </motion.div>
       </div>

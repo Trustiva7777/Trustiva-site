@@ -2,23 +2,27 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useLanguage } from '@/hooks/use-language'
+import { getTranslation } from '@/lib/translations'
 
 export function RWA() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { language } = useLanguage()
+  const t = getTranslation(language)
 
   const assetTypes = [
-    'Equity',
-    'Debt',
-    'Revenue‑Share',
-    'Commodities',
+    t.rwa.assetType1,
+    t.rwa.assetType2,
+    t.rwa.assetType3,
+    t.rwa.assetType4,
   ]
 
   const features = [
-    'XRP Ledger native token issuance',
-    'Jurisdiction & investor class controls',
-    'Automated compliance enforcement',
-    'Multi-signature governance',
+    t.rwa.capability1,
+    t.rwa.capability2,
+    t.rwa.capability3,
+    t.rwa.capability4,
   ]
 
   return (
@@ -32,21 +36,21 @@ export function RWA() {
         >
           <div className="text-center max-w-3xl mx-auto space-y-4">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              RWA Tokenization on XRPL
+              {t.rwa.title}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Tokenize real-world assets with institutional-grade compliance and controls
+              {t.rwa.description}
             </p>
           </div>
 
           <Card className="p-12 space-y-8">
             <div>
-              <h3 className="text-2xl font-semibold mb-6">Supported Asset Classes</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <h3 className="text-2xl font-semibold mb-6">{t.rwa.assetTypes}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assetTypes.map((type) => (
                   <div
                     key={type}
-                    className="p-4 bg-muted rounded-lg text-center font-medium"
+                    className="p-4 bg-muted rounded-lg font-medium"
                   >
                     {type}
                   </div>
@@ -57,7 +61,7 @@ export function RWA() {
             <Separator />
 
             <div>
-              <h3 className="text-2xl font-semibold mb-6">Platform Capabilities</h3>
+              <h3 className="text-2xl font-semibold mb-6">{t.rwa.capabilities}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
