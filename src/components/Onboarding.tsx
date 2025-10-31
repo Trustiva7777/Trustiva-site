@@ -1,8 +1,7 @@
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Buildings, User, Briefcase } from '@phosphor-icons/react'
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { toast } from 'sonner'
 

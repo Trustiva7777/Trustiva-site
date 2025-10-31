@@ -1,7 +1,6 @@
 import { Card } from '@/components/ui/card'
 import { Globe, ShieldCheck, ChartLine } from '@phosphor-icons/react'
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 
 export function Stablecoins() {
