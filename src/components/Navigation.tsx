@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { List, X } from '@phosphor-icons/react'
+import { Hummingbird } from '@/components/Hummingbird'
 
 export function Navigation() {
   const [open, setOpen] = useState(false)
@@ -26,22 +27,7 @@ export function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" className="text-accent">
-            <path
-              d="M16 4L8 12L16 20L24 12L16 4Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinejoin="round"
-              fill="none"
-            />
-            <path
-              d="M8 20L16 28L24 20"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinejoin="round"
-              fill="none"
-            />
-          </svg>
+          <Hummingbird className="text-accent" size={40} />
           <span className="text-2xl font-bold tracking-tight">TRUSTIVA</span>
         </div>
 
