@@ -2,7 +2,18 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 
-export function Hero() {
+interface HeroProps {
+  onGetStarted: () => void
+}
+
+export function Hero({ onGetStarted }: HeroProps) {
+  const scrollToOnboarding = () => {
+    const element = document.querySelector('#onboarding')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <section className="pt-32 pb-24 px-6 bg-gradient-to-b from-muted to-background">
       <div className="max-w-7xl mx-auto">
@@ -27,6 +38,7 @@ export function Hero() {
             <Button 
               size="lg" 
               className="bg-accent text-accent-foreground hover:bg-accent/90 text-lg px-8 h-14"
+              onClick={onGetStarted}
             >
               Launch Onboarding
               <ArrowRight className="ml-2" size={20} />
@@ -35,6 +47,7 @@ export function Hero() {
               size="lg" 
               variant="outline" 
               className="text-lg px-8 h-14 border-2"
+              onClick={scrollToOnboarding}
             >
               Explore Platform
             </Button>

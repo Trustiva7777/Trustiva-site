@@ -3,15 +3,14 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Buildings, User, Briefcase } from '@phosphor-icons/react'
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { toast } from 'sonner'
 
-export function Onboarding() {
+interface OnboardingProps {
+  onIssuerStart: () => void
+}
+
+export function Onboarding({ onIssuerStart }: OnboardingProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-
-  const handleStart = (type: string) => {
-    toast.success(`Starting ${type} onboarding process`)
-  }
 
   return (
     <section id="onboarding" ref={ref} className="py-24 px-6 bg-background">
@@ -42,7 +41,7 @@ export function Onboarding() {
                 </p>
               </div>
               <Button 
-                onClick={() => handleStart('Issuer')}
+                onClick={onIssuerStart}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
               >
@@ -60,9 +59,9 @@ export function Onboarding() {
                 </p>
               </div>
               <Button 
-                onClick={() => handleStart('Investor')}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
+                disabled
               >
                 Start
                 <ArrowRight className="ml-2" size={18} />
@@ -78,9 +77,9 @@ export function Onboarding() {
                 </p>
               </div>
               <Button 
-                onClick={() => handleStart('Broker/Dealer')}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
+                disabled
               >
                 Start
                 <ArrowRight className="ml-2" size={18} />
@@ -89,10 +88,10 @@ export function Onboarding() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <Button variant="outline" size="lg" className="border-2">
+            <Button variant="outline" size="lg" className="border-2" onClick={onIssuerStart}>
               Open Intake
             </Button>
-            <Button variant="outline" size="lg" className="border-2">
+            <Button variant="outline" size="lg" className="border-2" disabled>
               View Sample Packet
             </Button>
           </div>

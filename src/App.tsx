@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Toaster } from '@/components/ui/sonner'
 import { Navigation } from '@/components/Navigation'
 import { Hero } from '@/components/Hero'
@@ -8,17 +9,29 @@ import { Compliance } from '@/components/Compliance'
 import { Onboarding } from '@/components/Onboarding'
 import { XRPLSection } from '@/components/XRPLSection'
 import { Footer } from '@/components/Footer'
+import { IssuerIntake } from '@/components/IssuerIntake'
 
 function App() {
+  const [showIntake, setShowIntake] = useState(false)
+
+  if (showIntake) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <IssuerIntake />
+        <Toaster />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
-      <Hero />
+      <Hero onGetStarted={() => setShowIntake(true)} />
       <PlatformFeatures />
       <Stablecoins />
       <RWA />
       <Compliance />
-      <Onboarding />
+      <Onboarding onIssuerStart={() => setShowIntake(true)} />
       <XRPLSection />
       <Footer />
       <Toaster />
