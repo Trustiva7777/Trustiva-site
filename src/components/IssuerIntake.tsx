@@ -186,9 +186,13 @@ export function IssuerIntake() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-8">
           {STEPS.map((step) => (
-            <div
+            <button
               key={step.id}
-              className={`p-3 rounded-lg border transition-all ${
+              onClick={() => {
+                setCurrentStep(step.id)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }}
+              className={`p-3 rounded-lg border transition-all cursor-pointer hover:border-accent/50 ${
                 step.id === currentStep
                   ? 'border-accent bg-accent/10'
                   : step.id < currentStep
@@ -204,9 +208,9 @@ export function IssuerIntake() {
                     step.id === currentStep ? 'border-accent' : 'border-muted-foreground'
                   }`} />
                 )}
-                <span className="text-xs font-medium">{step.title}</span>
+                <span className="text-xs font-medium text-left">{step.title}</span>
               </div>
-            </div>
+            </button>
           ))}
         </div>
 
