@@ -17,7 +17,7 @@ function App() {
   if (showIntake) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <IssuerIntake />
+        <IssuerIntake onGoHome={() => setShowIntake(false)} />
         <Toaster />
       </div>
     )

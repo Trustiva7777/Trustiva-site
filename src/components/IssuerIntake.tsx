@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Progress } from '@/components/ui/progress'
-import { ArrowLeft, ArrowRight, CheckCircle, Upload } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, CheckCircle, Upload, House } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 type FormData = {
@@ -117,7 +117,11 @@ const INITIAL_FORM_DATA: FormData = {
   dataPrivacyConsent: false,
 }
 
-export function IssuerIntake() {
+type IssuerIntakeProps = {
+  onGoHome?: () => void
+}
+
+export function IssuerIntake({ onGoHome }: IssuerIntakeProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useKV<FormData>('issuer-intake-form', INITIAL_FORM_DATA)
 
@@ -172,8 +176,23 @@ export function IssuerIntake() {
     <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Issuer / Offering Intake</h1>
-          <p className="text-muted-foreground">Complete this questionnaire to begin the onboarding process with TRUSTIVA</p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Issuer / Offering Intake</h1>
+              <p className="text-muted-foreground">Complete this questionnaire to begin the onboarding process with TRUSTIVA</p>
+            </div>
+            {onGoHome && (
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={onGoHome}
+                className="flex-shrink-0"
+              >
+                <House size={20} className="mr-2" />
+                Home
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="mb-8">
