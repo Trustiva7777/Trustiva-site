@@ -1,0 +1,99 @@
+name: DNS Monitor
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  dns-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DNS Configuration
+        run: |
+          echo "## DNS Verification Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain**: trustiva.io" >> $GITHUB_STEP_SUMMARY
+          echo "**GitHub Pages Target**: kevanbtc.github.io" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          EXPECTED_IPS=("185.199.108.153" "185.199.109.153" "185.199.110.153" "185.199.111.153")
+          ERRORS=0
+          
+          echo "### Apex Domain (trustiva.io) A Records" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          APEX_IPS=$(dig +short trustiva.io A | sort)
+          
+          if [ -z "$APEX_IPS" ]; then
+            echo "❌ **FAIL**: No A records found for trustiva.io" >> $GITHUB_STEP_SUMMARY
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "| IP Address | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+            
+            for ip in "${EXPECTED_IPS[@]}"; do
+              if echo "$APEX_IPS" | grep -q "$ip"; then
+                echo "| $ip | ✅ Present |" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "| $ip | ❌ Missing |" >> $GITHUB_STEP_SUMMARY
+                ERRORS=$((ERRORS + 1))
+              fi
+            done
+            
+            while IFS= read -r ip; do
+              if [[ ! " ${EXPECTED_IPS[@]} " =~ " ${ip} " ]]; then
+                echo "| $ip | ⚠️ Unexpected |" >> $GITHUB_STEP_SUMMARY
+                ERRORS=$((ERRORS + 1))
+              fi
+            done <<< "$APEX_IPS"
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### WWW Subdomain CNAME" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          WWW_CNAME=$(dig +short www.trustiva.io CNAME)
+          
+          if [ -z "$WWW_CNAME" ]; then
+            echo "❌ **FAIL**: No CNAME record found for www.trustiva.io" >> $GITHUB_STEP_SUMMARY
+            ERRORS=$((ERRORS + 1))
+          elif [ "$WWW_CNAME" = "kevanbtc.github.io." ]; then
+            echo "✅ **PASS**: www.trustiva.io → kevanbtc.github.io" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **FAIL**: www.trustiva.io → $WWW_CNAME (expected kevanbtc.github.io.)" >> $GITHUB_STEP_SUMMARY
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### HTTPS Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if curl -sI https://trustiva.io | grep -q "HTTP/2 200"; then
+            echo "✅ **PASS**: https://trustiva.io is accessible" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **FAIL**: https://trustiva.io is not responding correctly" >> $GITHUB_STEP_SUMMARY
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          if curl -sI https://www.trustiva.io | grep -q "HTTP"; then
+            echo "✅ **PASS**: https://www.trustiva.io is accessible" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **WARN**: https://www.trustiva.io is not responding" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "### ❌ DNS Check Failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Found $ERRORS error(s). Please review the DNS configuration in GoDaddy." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "### ✅ All DNS Checks Passed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Domain is correctly configured for GitHub Pages." >> $GITHUB_STEP_SUMMARY
+          fi
