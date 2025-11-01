@@ -1,229 +1,184 @@
-# GitHub Pages Deployment Guide for TRUSTIVA
+# 🚀 Deploy Trustiva to trustiva.io
 
-## 📋 Detected Setup
-
-- **Repository**: spark-template (Vite + React SPA)
-- **Build Command**: `npm run build`
-- **Build Output**: `dist/` directory
-- **Static Site Generator**: Vite
-- **Current CNAME**: None detected
-- **Target Domain**: trustiva.io
-- **GitHub Username**: kevanbtc
+Your GoDaddy DNS is **already configured correctly**! Follow these simple steps to get your site live.
 
 ---
 
-## 🎯 Choose Domain Mode
+## ✅ What's Already Done
 
-**Option A: Apex domain (trustiva.io + www.trustiva.io)** ✅ RECOMMENDED
-- Primary: trustiva.io
-- Redirect: www.trustiva.io → trustiva.io
-
-**Option B: Subdomain only (spark.trustiva.io)**
-- Primary: spark.trustiva.io
-
-**Decision**: Using **Option A** (apex domain) for TRUSTIVA
+Your GoDaddy DNS records are perfect:
+- ✅ A records point to GitHub Pages (185.199.108-111.153)
+- ✅ CNAME for `www` points to trustiva7777.github.io
+- ✅ CNAME file exists in this project (`public/CNAME`)
 
 ---
 
-## 🌐 GoDaddy DNS Records
+## 🎯 3 Steps to Go Live
 
-### Required DNS Configuration
-
-| Type | Host | Value | TTL | Notes |
-|------|------|-------|-----|-------|
-| A | @ | 185.199.108.153 | 1 hour | GitHub Pages IP #1 |
-| A | @ | 185.199.109.153 | 1 hour | GitHub Pages IP #2 |
-| A | @ | 185.199.110.153 | 1 hour | GitHub Pages IP #3 |
-| A | @ | 185.199.111.153 | 1 hour | GitHub Pages IP #4 |
-| CNAME | www | kevanbtc.github.io. | 1 hour | Subdomain redirect |
-
-### ⚠️ Important DNS Rules
-
-1. **DO NOT** add an A record for `www` - only use CNAME
-2. **KEEP** all existing MX records (Zoho email) untouched
-3. **DELETE** any existing A records for @ if they don't match the four GitHub IPs above
-4. **DELETE** any existing CNAME for @ (apex domains can't use CNAME)
-5. The trailing dot in `kevanbtc.github.io.` is optional in GoDaddy's interface
-
-### Step-by-Step in GoDaddy
-
-1. Log in to GoDaddy → My Products → DNS
-2. Find "trustiva.io" and click "Manage DNS"
-3. **Add/Update A Records**:
-   - Click "Add" → Select "A"
-   - Host: `@` | Points to: `185.199.108.153` | TTL: `1 hour`
-   - Repeat for the other three IPs (.109, .110, .111)
-4. **Add CNAME for www**:
-   - Click "Add" → Select "CNAME"
-   - Host: `www` | Points to: `kevanbtc.github.io` | TTL: `1 hour`
-5. Click "Save" at the bottom
-
----
-
-## 📁 Repo Changes
-
-### 1. Create CNAME File
-
-**File**: `public/CNAME`
-**Content**:
-```
-trustiva.io
-```
-
-Create this file in your repository:
+### Step 1: Push This Code to GitHub
 
 ```bash
-mkdir -p public
-echo "trustiva.io" > public/CNAME
-git add public/CNAME
-git commit -m "Add CNAME for GitHub Pages custom domain"
-git push
+# Initialize git (if not already done)
+git init
+
+# Add all files
+git add .
+
+# Commit
+git commit -m "Deploy Trustiva website"
+
+# Add your GitHub repository
+git remote add origin https://github.com/trustiva7777/trustiva7777.github.io.git
+
+# Push to main branch
+git push -u origin main
 ```
 
-### 2. Create GitHub Actions Workflow
-
-**File**: `.github/workflows/deploy.yml`
-
-This workflow will:
-- Build your Vite app on every push to main
-- Deploy to GitHub Pages automatically
-- Preserve the CNAME file
-
-### 3. Update vite.config.ts (if needed)
-
-Ensure your base path is set correctly. For apex domains, base should be `/`.
-
-### 4. Enable GitHub Pages
-
-1. Go to: https://github.com/kevanbtc/spark-template/settings/pages
-2. Under "Source", select "GitHub Actions"
-3. Once deployed, under "Custom domain", enter: `trustiva.io`
-4. Wait ~1 minute, then check the "Enforce HTTPS" box
+> **Note:** If you're using a different repository name, adjust the URL above.
 
 ---
 
-## ✅ Verification Steps
+### Step 2: Enable GitHub Pages
 
-### Step 1: Check DNS Propagation
-
-Wait 5-60 minutes after making DNS changes, then run:
-
-```bash
-# Check apex domain resolves to GitHub Pages IPs
-nslookup trustiva.io
-
-# Expected output (any of these IPs):
-# Address: 185.199.108.153
-# Address: 185.199.109.153
-# Address: 185.199.110.153
-# Address: 185.199.111.153
-
-# Check www subdomain points to GitHub
-nslookup www.trustiva.io
-
-# Expected output:
-# www.trustiva.io canonical name = kevanbtc.github.io
-```
-
-### Step 2: Verify with dig (more detailed)
-
-```bash
-dig trustiva.io +short
-# Should return all four GitHub IPs
-
-dig www.trustiva.io +short
-# Should return: kevanbtc.github.io
-# Then the four GitHub IPs
-```
-
-### Step 3: Check HTTP/HTTPS
-
-```bash
-# Check if site is accessible
-curl -I https://trustiva.io
-
-# Expected: HTTP/2 200 OK
-
-# Check www redirect
-curl -I https://www.trustiva.io
-
-# Expected: Should redirect to https://trustiva.io
-```
-
-### Step 4: Browser Test
-
-1. Visit: https://trustiva.io (should load your site)
-2. Visit: https://www.trustiva.io (should redirect to trustiva.io)
-3. Visit: http://trustiva.io (should redirect to https://trustiva.io)
+1. Go to your repository on GitHub: `https://github.com/trustiva7777/trustiva7777.github.io`
+2. Click **Settings** (top menu)
+3. Click **Pages** (left sidebar)
+4. Under **Build and deployment**:
+   - **Source:** Deploy from a branch
+   - **Branch:** Select `main` and folder `/ (root)`
+   - Click **Save**
+5. Under **Custom domain**:
+   - Enter: `trustiva.io`
+   - Click **Save**
+   - Wait a minute, then check **Enforce HTTPS**
 
 ---
 
-## 🤖 Optional: DNS Monitoring CI Workflow
+### Step 3: Wait for DNS to Propagate
 
-**File**: `.github/workflows/dns-monitor.yml`
-
-This workflow runs:
-- On every push to main
-- Nightly at 2 AM UTC
-- Manual trigger
-
-It verifies:
-- Apex domain resolves to correct GitHub IPs
-- WWW subdomain CNAMEs to your GitHub Pages URL
-- HTTPS is working
+- **Time needed:** 5 minutes to 48 hours (usually ~30 minutes)
+- **Check status:** Visit https://dnschecker.org and enter `trustiva.io`
+- **When ready:** Visit https://trustiva.io 🎉
 
 ---
 
-## 📝 Deployment Checklist
+## 🔧 Alternative: Automated Deployment
 
-- [ ] Create `public/CNAME` with `trustiva.io`
-- [ ] Create `.github/workflows/deploy.yml` workflow
-- [ ] Push changes to main branch
-- [ ] Update GoDaddy DNS with 4 A records and 1 CNAME
-- [ ] Wait for DNS propagation (5-60 minutes)
-- [ ] Enable GitHub Pages in repo settings (Source: GitHub Actions)
-- [ ] Add custom domain `trustiva.io` in GitHub Pages settings
-- [ ] Wait ~1 minute after DNS verification
-- [ ] Enable "Enforce HTTPS" in GitHub Pages settings
-- [ ] Test https://trustiva.io in browser
-- [ ] Test https://www.trustiva.io redirects properly
-- [ ] (Optional) Add DNS monitoring workflow
+If you want automatic deployments when you push code changes, create this file:
+
+**`.github/workflows/deploy.yml`**
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build
+        run: npm run build
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+Then in GitHub Settings → Pages, change source to **GitHub Actions**.
 
 ---
 
 ## 🐛 Troubleshooting
 
-### "Domain's DNS record could not be retrieved"
-- DNS hasn't propagated yet - wait 5-60 minutes
-- Run `nslookup trustiva.io` to check if A records are visible
-- Clear GitHub's DNS cache by removing and re-adding the custom domain
-
-### "Certificate error" or "Not secure"
-- DNS is working but HTTPS cert hasn't been issued yet
-- Wait 5-10 minutes after DNS verifies
-- GitHub auto-provisions Let's Encrypt certificates
-- Don't enable "Enforce HTTPS" until the cert is ready
-
 ### "404 - There isn't a GitHub Pages site here"
-- Workflow hasn't run yet or failed - check Actions tab
-- CNAME file is missing from `dist/` - ensure it's in `public/`
-- GitHub Pages source isn't set to "GitHub Actions"
+- Wait a few more minutes for GitHub to build
+- Verify the CNAME file is in the `public/` folder
+- Check that GitHub Pages is enabled in Settings
 
-### www subdomain not redirecting
-- Check CNAME record: `dig www.trustiva.io`
-- Should see: `www.trustiva.io CNAME kevanbtc.github.io`
-- GoDaddy sometimes adds an @ instead of www - delete and recreate
+### "DNS_PROBE_FINISHED_NXDOMAIN"
+- DNS hasn't propagated yet - wait longer
+- Check https://dnschecker.org to see propagation status
+- Try clearing your browser cache or use incognito mode
 
-### Build fails
-- Check Node version in workflow matches your local version
-- Ensure `npm run build` works locally
-- Check workflow logs in Actions tab
+### Site shows but no HTTPS (red warning)
+- Wait for DNS to fully propagate first
+- Go to GitHub Settings → Pages
+- Check the box for "Enforce HTTPS"
+- GitHub auto-provisions SSL (can take 24 hours)
+
+### Changes not showing up
+- Clear your browser cache
+- Wait a few minutes for GitHub to rebuild
+- Check if you pushed to the correct branch
 
 ---
 
-## 📚 Resources
+## 📋 Quick Reference
 
-- [GitHub Pages Documentation](https://docs.github.com/en/pages)
-- [Custom Domain Setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site)
-- [Troubleshooting Custom Domains](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/troubleshooting-custom-domains-and-github-pages)
-- [GoDaddy DNS Management](https://www.godaddy.com/help/manage-dns-680)
+**Your DNS Records (GoDaddy):**
+```
+Type    Name    Value                    TTL
+A       @       185.199.108.153         1 Hour
+A       @       185.199.109.153         1 Hour
+A       @       185.199.110.153         1 Hour
+A       @       185.199.111.153         1 Hour
+CNAME   www     trustiva7777.github.io  1 Hour
+```
+
+**GitHub Repository:** trustiva7777.github.io  
+**Custom Domain:** trustiva.io  
+**CNAME File Location:** `/public/CNAME`  
+**CNAME File Content:** `trustiva.io`
+
+---
+
+## 🔗 Helpful Links
+
+- [Check DNS Propagation](https://dnschecker.org)
+- [GitHub Pages Docs](https://docs.github.com/en/pages)
+- [GoDaddy DNS Help](https://www.godaddy.com/help/manage-dns-records-680)
+
+---
+
+## ⚡ Current Subdomains
+
+Active subdomains from your DNS:
+- `pay.trustiva.io` → GoDaddy Commerce  
+- `spark.trustiva.io` → GitHub Pages  
+- `www.trustiva.io` → GitHub Pages (your main site)
+
+---
+
+**You're all set!** Just push to GitHub, enable Pages, and wait for DNS. Your site will be live at https://trustiva.io
