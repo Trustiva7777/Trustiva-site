@@ -32,12 +32,22 @@ jobs:
       - name: Build
         run: npm run build
 
-      # Ensure CNAME is in the published artifact (keep either file below)
+      # Optional but recommended for SPAs: serve client routes on refresh
+      - name: Add SPA 404 fallback
+        run: |
+          mkdir -p dist
+          if [ -f dist/index.html ]; then cp dist/index.html dist/404.html; fi
+
+      # Ensure CNAME gets published
       - name: Ensure CNAME
         run: |
           mkdir -p dist
           if [ -f CNAME ]; then cp CNAME dist/; fi
           if [ -f public/CNAME ]; then cp public/CNAME dist/; fi
+
+      # Configure GitHub Pages (sets up the deployment target)
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
