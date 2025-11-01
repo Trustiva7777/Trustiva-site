@@ -1,8 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (Vite)
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -18,24 +18,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: Setup Node
+      - uses: actions/checkout@v4
+
+      - name: Use Node 20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Install dependencies
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
         run: npm ci
-        
+
       - name: Build
         run: npm run build
-        
-      - name: Add CNAME
-        run: echo "trustiva.io" > dist/CNAME
-        
+
+      # Ensure CNAME is in the published artifact (keep either file below)
+      - name: Ensure CNAME
+        run: |
+          mkdir -p dist
+          if [ -f CNAME ]; then cp CNAME dist/; fi
+          if [ -f public/CNAME ]; then cp public/CNAME dist/; fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -48,6 +51,5 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
