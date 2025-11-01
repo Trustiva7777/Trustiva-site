@@ -20,10 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node 20
+      - name: Use Node 18
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
           cache: npm
 
       - name: Install deps
@@ -38,12 +38,16 @@ jobs:
           mkdir -p dist
           if [ -f dist/index.html ]; then cp dist/index.html dist/404.html; fi
 
-      # Ensure CNAME gets published
-      - name: Ensure CNAME
+      # Ensure CNAME gets published (Vite copies public/ to dist/ automatically)
+      - name: Verify CNAME in output
         run: |
-          mkdir -p dist
-          if [ -f CNAME ]; then cp CNAME dist/; fi
-          if [ -f public/CNAME ]; then cp public/CNAME dist/; fi
+          if [ -f dist/CNAME ]; then
+            echo "✓ CNAME file found in dist/"
+            cat dist/CNAME
+          else
+            echo "⚠ CNAME file not found in dist/, copying from public/"
+            cp public/CNAME dist/ || echo "Error: CNAME not in public/ either"
+          fi
 
       # Configure GitHub Pages (sets up the deployment target)
       - name: Setup Pages
