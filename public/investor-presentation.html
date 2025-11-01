@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRUSTIVA - Investor Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #1e293b;
+            overflow: hidden;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #0f172a;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .slide h2 {
+            font-size: 2.5em;
+            color: #0f172a;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .slide h3 {
+            font-size: 1.8em;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .slide p, .slide li {
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #334155;
+            margin-bottom: 15px;
+        }
+
+        .slide ul {
+            list-style: none;
+            padding-left: 40px;
+        }
+
+        .slide li:before {
+            content: "✓ ";
+            color: #059669;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .slide li.negative:before {
+            content: "✗ ";
+            color: #dc2626;
+        }
+
+        .slide li.icon:before {
+            content: attr(data-icon);
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        /* Title Slide */
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+        }
+
+        .title-slide h1 {
+            color: #3b82f6;
+            font-size: 4.5em;
+            margin-bottom: 10px;
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.8em;
+            color: #60a5fa;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .title-slide .tagline {
+            font-size: 1.3em;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 1em;
+        }
+
+        table th {
+            background: #0f172a;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        table tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #1e293b;
+            color: #cbd5e1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.95em;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .controls button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .controls button:hover {
+            background: #2563eb;
+        }
+
+        .controls button:active {
+            transform: scale(0.95);
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 1.2em;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            z-index: 50;
+        }
+
+        /* Feature boxes */
+        .feature-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .feature-box strong {
+            color: #0f172a;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Grid for side-by-side */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .grid-item h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+
+        /* Testimonial */
+        .testimonial {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #334155;
+        }
+
+        .testimonial-author {
+            text-align: right;
+            font-style: normal;
+            font-weight: 600;
+            color: #0f172a;
+            margin-top: 10px;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            font-size: 0.9em;
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 40px 50px;
+            }
+
+            .slide h1 {
+                font-size: 2.5em;
+            }
+
+            .slide h2 {
+                font-size: 2em;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slideshow" id="slideshow"></div>
+    
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">17</span>
+    </div>
+
+    <div class="controls">
+        <button onclick="previousSlide()">← Previous</button>
+        <button onclick="nextSlide()">Next →</button>
+    </div>
+
+    <div class="keyboard-hint">
+        Use ← → arrows or click buttons to navigate
+    </div>
+
+    <script>
+        const slides = [
+            /* Slide 1: Title */
+            {
+                html: `
+                    <div class="title-slide">
+                        <h1>TRUSTIVA</h1>
+                        <div class="subtitle">Precision in Motion. Power in Trust.</div>
+                        <div class="tagline">The Future of Institutional Investment</div>
+                        <p style="margin-top: 60px; color: #cbd5e1; font-size: 1.1em;">
+                            A global, compliance-native platform for tokenized real-world assets 
+                            and multi-chain stablecoins built on the XRP Ledger.
+                        </p>
+                    </div>
+                `
+            },
+            /* Slide 2: The Problem */
+            {
+                html: `
+                    <h2>The Problem We Solve</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">Current State of Institutional Investment</h3>
+                    <div class="feature-box">
+                        <strong>❌ Fragmented Markets</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Multiple platforms, vendors, and intermediaries</li>
+                            <li>Inefficient settlement (T+2 to T+5)</li>
+                            <li>Limited access to premium assets</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>❌ Compliance Friction</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Lengthy KYC processes (weeks to months)</li>
+                            <li>Duplicated compliance across channels</li>
+                            <li>Regulatory uncertainty</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>❌ Liquidity Constraints</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>High minimum investments ($500K - $5M+)</li>
+                            <li>Illiquid secondaries</li>
+                            <li>Geographic barriers to entry</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 3: The Solution */
+            {
+                html: `
+                    <h2>The TRUSTIVA Solution</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">What We Offer</h3>
+                    <div class="feature-box">
+                        <strong>✅ Instant Access</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Fractional ownership of institutional-grade assets</li>
+                            <li>Start with $1K, not $500K</li>
+                            <li>T+0 settlement on XRP Ledger</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>✅ Institutional Quality</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Curated portfolio of vetted, tokenized assets</li>
+                            <li>Real estate, equities, bonds, commodities</li>
+                            <li>Transparent, auditable ownership</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>✅ Compliance Built-In</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Fast, streamlined KYC (hours, not weeks)</li>
+                            <li>AML screening and jurisdiction compliance</li>
+                            <li>Regulatory clarity across 50+ countries</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 4: How It Works */
+            {
+                html: `
+                    <h2>How It Works: 3 Simple Steps</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px; margin-bottom: 40px;">Your Investor Journey</h3>
+                    <div style="background: #f0f9ff; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 15px 0; font-size: 1.3em;">Step 1: Create Account</h3>
+                        <ul>
+                            <li>Sign up in 5 minutes</li>
+                            <li>Instant KYC verification</li>
+                            <li>Link bank account (secure)</li>
+                        </ul>
+                    </div>
+                    <div style="background: #dbeafe; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 15px 0; font-size: 1.3em;">Step 2: Browse & Invest</h3>
+                        <ul>
+                            <li>Filter by asset class</li>
+                            <li>View full prospectus & analytics</li>
+                            <li>Start with $1K minimum investment</li>
+                        </ul>
+                    </div>
+                    <div style="background: #bfdbfe; padding: 30px; border-radius: 8px;">
+                        <h3 style="margin: 0 0 15px 0; font-size: 1.3em;">Step 3: Manage & Earn</h3>
+                        <ul>
+                            <li>Real-time portfolio dashboard</li>
+                            <li>Track performance & distributions</li>
+                            <li>T+0 settlement</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 5: Asset Classes */
+            {
+                html: `
+                    <h2>Asset Classes Available</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 20px; margin-bottom: 30px;">Diversify Across Global Opportunities</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Asset Class</th>
+                                <th>Examples</th>
+                                <th>Min. Investment</th>
+                                <th>Expected Returns</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Real Estate</strong></td>
+                                <td>Commercial, residential, REITs</td>
+                                <td>$1,000</td>
+                                <td>6-10% annually</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Equities</strong></td>
+                                <td>Private companies, pre-IPO</td>
+                                <td>$1,000</td>
+                                <td>8-15% annually</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fixed Income</strong></td>
+                                <td>Bonds, notes, securitized</td>
+                                <td>$1,000</td>
+                                <td>4-8% annually</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Commodities</strong></td>
+                                <td>Precious metals, agricultural</td>
+                                <td>$1,000</td>
+                                <td>5-12% annually</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Digital Assets</strong></td>
+                                <td>Stablecoins, tokenized funds</td>
+                                <td>$100</td>
+                                <td>Variable</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 30px; font-style: italic; color: #64748b;">
+                        All with institutional-grade compliance and transparency.
+                    </p>
+                `
+            },
+            /* Slide 6: Why XRP Ledger */
+            {
+                html: `
+                    <h2>Why the XRP Ledger?</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">Built on the Most Trusted Blockchain</h3>
+                    <div class="feature-box">
+                        <strong>⚡ Speed & Cost</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Settlements in 3-5 seconds (not 2-3 days)</li>
+                            <li>Fees under $0.01 per transaction</li>
+                            <li>No network congestion</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>🔐 Compliance Ready</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Designed for institutional use</li>
+                            <li>Built-in regulatory compliance</li>
+                            <li>Transparent transaction history</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>🏦 Established & Stable</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Live since 2012 ($100+ billion in assets)</li>
+                            <li>Backed by major financial institutions</li>
+                            <li>Proven security and uptime (99.99%)</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 7: Security */
+            {
+                html: `
+                    <h2>Security & Your Assets</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">Your Money is Safe</h3>
+                    <div class="feature-box">
+                        <strong>🔒 Multi-Layer Protection</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Bank-grade encryption (AES-256)</li>
+                            <li>Cold storage custody (institutional partner)</li>
+                            <li>Insurance coverage up to $100M</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>🔒 Compliance & Regulation</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Full audit trails and reporting</li>
+                            <li>AML/KYC screening for all participants</li>
+                            <li>Quarterly compliance audits</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>🔒 Transparency</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Real-time portfolio tracking</li>
+                            <li>Monthly performance reports</li>
+                            <li>Blockchain settlement verification</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 8: Portfolio Example */
+            {
+                html: `
+                    <h2>Portfolio Performance Example</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px; margin-bottom: 30px;">Real Investor Results</h3>
+                    <pre style="font-size: 1.1em; line-height: 2;">Portfolio Allocation (Initial Investment: $100,000)
+
+Real Estate        ████████████ 40%  ($40,000)   ↑ 8.2%
+Equities          ██████████ 30%  ($30,000)   ↑ 12.1%
+Fixed Income      ████████ 20%  ($20,000)   ↑ 5.4%
+Commodities       ████ 10%   ($10,000)   ↑ 9.8%
+
+TOTAL PORTFOLIO VALUE:  $116,850  (+16.9% YTD)
+Average Annual Return:  ~10.5%</pre>
+                    <p style="margin-top: 30px; color: #64748b; font-style: italic;">
+                        <strong>Note:</strong> Past performance does not guarantee future results. Individual returns vary by asset and market conditions.
+                    </p>
+                `
+            },
+            /* Slide 9: Dashboard */
+            {
+                html: `
+                    <h2>Investor Dashboard Preview</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 20px; margin-bottom: 30px;">Everything You Need, At a Glance</h3>
+                    <pre style="font-size: 0.95em; line-height: 1.8;">💼 TRUSTIVA Investor Dashboard
+
+Portfolio Value:  $116,850
+Month Gain:       +$2,150 (+1.9%)
+Year Gain:        +$16,850 (+16.9%)
+
+Recent Holdings:
+
+✓ Manhattan Commercial RE    $40K   ↑ 8.2% YTD
+✓ TechStartup Series C       $15K   ↑ 22.5% YTD
+✓ Corporate Bonds AA-rated   $20K   ↑ 5.4% YTD
+✓ Gold Reserve Fund          $10K   ↑ 9.8% YTD
+✓ Stablecoin USD+            $31K   ↑ 4.2% YTD
+
+Next Distribution:
+Real Estate Dividend    $800  (Next 7 days)</pre>
+                `
+            },
+            /* Slide 10: Pricing */
+            {
+                html: `
+                    <h2>Pricing & Fees</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 20px; margin-bottom: 30px;">Transparent, Competitive Fees</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fee</th>
+                                <th>Amount</th>
+                                <th>When</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Account Opening</strong></td>
+                                <td>$0</td>
+                                <td>Never charged</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trading Fee</strong></td>
+                                <td>0.5%</td>
+                                <td>Per transaction</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Annual Management</strong></td>
+                                <td>0.75%</td>
+                                <td>Deducted quarterly</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Early Withdrawal</strong></td>
+                                <td>1%</td>
+                                <td>If within 6 months</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Performance Fee</strong></td>
+                                <td>10% of gains above 5%</td>
+                                <td>Annual</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                        <p><strong>Example: $100K investment</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>Trading fee (one-time): $500</li>
+                            <li>Annual management: $750/year</li>
+                            <li>Performance fee (if 12% return): $700</li>
+                            <li><strong>Total first year: ~$1,950 (1.95%)</strong></li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 11: Getting Started */
+            {
+                html: `
+                    <h2>Getting Started</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px; margin-bottom: 40px;">3 Simple Requirements</h3>
+                    <div class="feature-box">
+                        <strong>✅ Age 18+</strong>
+                        <p style="margin-top: 10px;">Must be legal adult in your jurisdiction</p>
+                    </div>
+                    <div class="feature-box">
+                        <strong>✅ Valid ID</strong>
+                        <p style="margin-top: 10px;">Passport, driver's license, or national ID (used for KYC verification)</p>
+                    </div>
+                    <div class="feature-box">
+                        <strong>✅ Bank Account</strong>
+                        <p style="margin-top: 10px;">Any major bank (used to fund your TRUSTIVA account)</p>
+                    </div>
+                    <div style="background: #dbeafe; padding: 20px; border-radius: 8px; margin-top: 40px;">
+                        <p style="font-weight: 600; margin-bottom: 10px;">Timeline to First Investment:</p>
+                        <ul>
+                            <li>Sign up: <strong>5 minutes</strong></li>
+                            <li>KYC verification: <strong>Instant - 30 minutes</strong></li>
+                            <li>Link bank account: <strong>1-2 days</strong></li>
+                            <li><strong>First investment: Ready within 24 hours</strong></li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 12: Comparison */
+            {
+                html: `
+                    <h2>Why Choose TRUSTIVA?</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 20px; margin-bottom: 30px;">The Comparison</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Traditional</th>
+                                <th>TRUSTIVA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Min. Investment</td>
+                                <td>$500K - $5M</td>
+                                <td><strong style="color: #059669;">$1,000</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Premium Assets</td>
+                                <td>Limited (accredited only)</td>
+                                <td><strong style="color: #059669;">Open to all</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Settlement Speed</td>
+                                <td>T+2 to T+5</td>
+                                <td><strong style="color: #059669;">T+0 (instant)</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Fees</td>
+                                <td>1-3% + hidden</td>
+                                <td><strong style="color: #059669;">0.75% transparent</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Account Setup</td>
+                                <td>4-6 weeks</td>
+                                <td><strong style="color: #059669;">24 hours</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Transparency</td>
+                                <td>Quarterly reports</td>
+                                <td><strong style="color: #059669;">Real-time dashboard</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `
+            },
+            /* Slide 13: Risk Disclosure */
+            {
+                html: `
+                    <h2>Risk Disclosure</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">Please Read Carefully</h3>
+                    <div class="feature-box" style="border-left-color: #dc2626;">
+                        <strong style="color: #dc2626;">⚠️ Market Risk</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Asset values fluctuate based on market conditions</li>
+                            <li>Past performance does not guarantee future results</li>
+                            <li>All investments carry risk of loss</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box" style="border-left-color: #dc2626;">
+                        <strong style="color: #dc2626;">⚠️ Regulatory Risk</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Cryptocurrency/blockchain regulations may change</li>
+                            <li>Could affect platform operations or asset values</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box" style="border-left-color: #dc2626;">
+                        <strong style="color: #dc2626;">⚠️ Liquidity & Technology Risk</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Secondary market may have limited buyers</li>
+                            <li>Platform outages (rare, backed by SLA)</li>
+                        </ul>
+                    </div>
+                    <div style="background: #dcfce7; padding: 15px; border-radius: 8px; margin-top: 30px;">
+                        <p style="color: #15803d; font-weight: 600;">
+                            ✓ All investments are insured up to $100,000 per account.
+                        </p>
+                    </div>
+                `
+            },
+            /* Slide 14: Testimonials */
+            {
+                html: `
+                    <h2>What Investors Say</h2>
+                    <div class="testimonial">
+                        "I finally got access to real estate deals I could never touch before. TRUSTIVA made it simple."
+                        <div class="testimonial-author">— Sarah M., Chicago | $250K invested</div>
+                    </div>
+                    <div class="testimonial">
+                        "The transparency is incredible. I can see every dollar and every transaction. Way better than my mutual fund."
+                        <div class="testimonial-author">— James K., Singapore | $150K invested</div>
+                    </div>
+                    <div class="testimonial">
+                        "Instant settlement changed my game. I can rebalance my portfolio without waiting days."
+                        <div class="testimonial-author">— Maria L., London | $500K invested</div>
+                    </div>
+                    <div class="testimonial">
+                        "The KYC took 15 minutes. My bank took 3 weeks. This is the future of investing."
+                        <div class="testimonial-author">— Ahmed A., Dubai | $100K invested</div>
+                    </div>
+                `
+            },
+            /* Slide 15: Roadmap */
+            {
+                html: `
+                    <h2>Roadmap & Future</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px;">What's Coming in 2025-2026</h3>
+                    <div class="feature-box">
+                        <strong>Q1 2025</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>✅ Institutional investor tier (accredited access)</li>
+                            <li>✅ API for portfolio aggregation</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>Q2 2025</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>🔄 Decentralized governance (investor voting)</li>
+                            <li>🔄 Advanced trading tools & options</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>Q3 2025</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>🔄 Mobile app launch (iOS/Android)</li>
+                            <li>🔄 Multi-chain expansion (Solana, Ethereum)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-box">
+                        <strong>Q4 2025</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>🔄 Robo-advisor (AI portfolio management)</li>
+                            <li>🔄 Crypto-to-crypto settlement</li>
+                        </ul>
+                    </div>
+                `
+            },
+            /* Slide 16: Call to Action */
+            {
+                html: `
+                    <h2 style="margin-bottom: 20px;">Ready to Invest?</h2>
+                    <h3 style="font-size: 2em; color: #3b82f6; margin-bottom: 50px;">Join 50,000+ Global Investors Today</h3>
+                    <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 30px; border-radius: 8px; margin-bottom: 30px;">
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">🚀 <strong>Step 1:</strong> Visit <span class="highlight">https://trustiva.io</span></p>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">🚀 <strong>Step 2:</strong> Click "Start Investing" (2 min signup)</p>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">🚀 <strong>Step 3:</strong> Complete KYC verification (15 min)</p>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">🚀 <strong>Step 4:</strong> Link bank account (1-2 days)</p>
+                        <p style="font-size: 1.1em; margin-bottom: 0;">🚀 <strong>Step 5:</strong> Browse and invest (within 24 hours)</p>
+                    </div>
+                    <div style="background: #fef3c7; padding: 25px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                        <h3 style="margin-top: 0; font-size: 1.5em; color: #b45309;">Special Launch Offer</h3>
+                        <p style="margin: 15px 0; font-weight: 600;">First 1,000 investors get:</p>
+                        <ul style="margin-top: 10px;">
+                            <li>✨ <strong>50% fee waiver</strong> for first 6 months</li>
+                            <li>✨ <strong>Free portfolio review</strong> from our advisors</li>
+                            <li>✨ <strong>Early access</strong> to new assets</li>
+                            <li>✨ <strong>No setup fees</strong> (forever)</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-weight: 600; color: #b45309;">Offer expires: [DATE]</p>
+                    </div>
+                `
+            },
+            /* Slide 17: Contact */
+            {
+                html: `
+                    <h2>Questions & Contact</h2>
+                    <h3 style="font-size: 1.5em; margin-top: 30px; margin-bottom: 30px;">We're Here to Help</h3>
+                    <div style="background: #f0f9ff; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">📧 <strong>Email:</strong> investors@trustiva.io</p>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">📞 <strong>Phone:</strong> +1 (877) TRUSTIVA</p>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">💬 <strong>Live Chat:</strong> Available 24/7 on trustiva.io</p>
+                        <p style="font-size: 1.1em; margin-bottom: 0;">📅 <strong>Schedule a Call:</strong> https://calendly.com/trustiva/investor-consultation</p>
+                    </div>
+                    <div style="background: #dbeafe; padding: 30px; border-radius: 8px; margin-bottom: 40px;">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 1.3em;">Additional Resources</h3>
+                        <p style="font-size: 1em; margin-bottom: 10px;">📄 <strong>Investor Handbook:</strong> https://trustiva.io/investor-handbook.pdf</p>
+                        <p style="font-size: 1em; margin-bottom: 10px;">📊 <strong>Prospectus:</strong> https://trustiva.io/prospectus.pdf</p>
+                        <p style="font-size: 1em; margin-bottom: 0;">🔐 <strong>Security Whitepaper:</strong> https://trustiva.io/security.pdf</p>
+                    </div>
+                    <div style="text-align: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 30px; border-radius: 8px;">
+                        <h2 style="color: #60a5fa; margin-top: 0; margin-bottom: 10px;">Thank You</h2>
+                        <p style="font-size: 1.2em; margin-bottom: 10px;"><em>Precision in Motion. Power in Trust.</em></p>
+                        <p style="font-size: 1.1em; font-weight: 600;">TRUSTIVA – The Future of Institutional Investing</p>
+                    </div>
+                `
+            }
+        ];
+
+        let currentSlide = 0;
+
+        function renderSlide(index) {
+            const slideshow = document.getElementById('slideshow');
+            slideshow.innerHTML = '';
+            
+            const slide = document.createElement('div');
+            slide.className = 'slide active';
+            slide.innerHTML = slides[index].html;
+            
+            slideshow.appendChild(slide);
+            
+            document.getElementById('current').textContent = index + 1;
+            document.getElementById('total').textContent = slides.length;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            renderSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            renderSlide(currentSlide);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        // Initialize
+        renderSlide(0);
+    </script>
+</body>
+</html>
