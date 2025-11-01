@@ -8,9 +8,11 @@ import { getTranslation } from '@/lib/translations'
 
 interface OnboardingProps {
   onIssuerStart: () => void
+  onInvestorStart: () => void
+  onBrokerStart: () => void
 }
 
-export function Onboarding({ onIssuerStart }: OnboardingProps) {
+export function Onboarding({ onIssuerStart, onInvestorStart, onBrokerStart }: OnboardingProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const { language } = useLanguage()
@@ -68,9 +70,9 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
                 </p>
               </div>
               <Button 
+                onClick={onInvestorStart}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
-                disabled
               >
                 {t.onboarding.investorCta}
                 <ArrowRight className="ml-2" size={18} />
@@ -89,9 +91,9 @@ export function Onboarding({ onIssuerStart }: OnboardingProps) {
                 </p>
               </div>
               <Button 
+                onClick={onBrokerStart}
                 className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
                 size="lg"
-                disabled
               >
                 {t.onboarding.brokerCta}
                 <ArrowRight className="ml-2" size={18} />
